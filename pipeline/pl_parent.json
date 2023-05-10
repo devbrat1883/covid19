@@ -1,0 +1,46 @@
+{
+	"name": "pl_parent",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data Ingestion",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_ingest_population_ecdc",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "Data Processing",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Data Ingestion",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_data_processing",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "master_pipeline"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-04T16:34:15Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

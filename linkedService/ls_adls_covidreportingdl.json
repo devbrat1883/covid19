@@ -1,0 +1,19 @@
+{
+	"name": "ls_adls_covidreportingdl",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://covidreportingdl1883.dfs.core.windows.net/",
+			"accountKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "ls_kv_adls",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "secretadls1897"
+			}
+		}
+	}
+}

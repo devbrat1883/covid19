@@ -1,0 +1,207 @@
+{
+	"name": "pl_data_processing",
+	"properties": {
+		"activities": [
+			{
+				"name": "Transform Cases and Deaths",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "df_transform_cases_deaths_test",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Transform Hospital Admissions",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Transform Cases and Deaths",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "df_transform_hospital_admissions",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Transform Testing Data",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "Transform Hospital Admissions",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "df_transform_testing",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Execute Population Transformation",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Transform Testing Data",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/covid/trans/transform_population_data"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_db_covid_cluster",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Cases Deaths Delta",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Transform Cases and Deaths",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/covid/trans/cases_deaths_delta"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_db_covid_cluster",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Hospital Delta",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Cases Deaths Delta",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/covid/trans/hospital_delta"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_db_covid_cluster",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Testing Delta",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Hospital Delta",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/covid/trans/testing_delta"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_db_covid_cluster",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "Process"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-05T08:38:44Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
