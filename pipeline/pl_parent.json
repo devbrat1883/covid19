@@ -40,7 +40,7 @@
 			"name": "master_pipeline"
 		},
 		"annotations": [],
-		"lastPublishTime": "2023-05-11T08:33:29Z"
+		"lastPublishTime": "2023-05-16T04:09:45Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }

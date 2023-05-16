@@ -27,7 +27,7 @@
 			"name": "Dump"
 		},
 		"annotations": [],
-		"lastPublishTime": "2023-05-11T08:33:26Z"
+		"lastPublishTime": "2023-05-16T04:09:41Z"
 	},
 	"type": "Microsoft.DataFactory/factories/pipelines"
 }
